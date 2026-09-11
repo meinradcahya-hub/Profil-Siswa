@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Profil Latar Belakang Siswa</title>
+</head>
+<body style="margin:0; background:#F3F1EA; padding:20px 0;">
+<div id="app-root"></div>
+<style>
+  #app-root, #app-root * { box-sizing: border-box; }
+  #app-root {
+    --paper: #FAF8F4;
+    --ink: #202D36;
+    --ink-soft: #5B6873;
+    --line: #DDD7CB;
+    --teal: #1F5C53;
+    --teal-deep: #143F39;
+    --teal-tint: #E7F0EE;
+    --amber: #A9752B;
+    --amber-tint: #FBF0DE;
+    --rose: #A5423A;
+    --rose-tint: #F8E9E7;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    color: var(--ink);
+    background: transparent;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+  }
+  #app-root .serif { font-family: Georgia, "Times New Roman", serif; }
+
+  .psf-wrap { max-width: 1180px; margin: 0 auto; padding: 4px; }
+  .psf-header { padding: 22px 26px 20px; border-bottom: 1px solid var(--line); margin-bottom: 22px; }
+  .psf-header h1 {
+    font-size: 26px; margin: 0 0 6px; font-weight: 600; letter-spacing: -0.01em;
+  }
+  .psf-header p { margin: 0; color: var(--ink-soft); font-size: 14px; max-width: 62ch; }
+  .psf-badge-row { display:flex; gap:8px; margin-top:14px; flex-wrap: wrap; }
+  .psf-pill {
+    font-size: 12px; padding: 5px 11px; border-radius: 999px; background: var(--teal-tint);
+    color: var(--teal-deep); border: 1px solid #CADDD8;
+  }
+
+  .psf-grid { display: grid; grid-template-columns: minmax(320px, 400px) 1fr; gap: 22px; padding: 0 26px 30px; align-items: start; }
+  @media (max-width: 860px) { .psf-grid { grid-template-columns: 1fr; } }
+
+  .psf-card {
+    background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 22px;
+  }
+  .psf-card h2 { font-size: 15px; margin: 0 0 4px; font-weight: 600; }
+  .psf-card .psf-sub { font-size: 12.5px; color: var(--ink-soft); margin: 0 0 18px; }
+
+  .psf-form-section { margin-bottom: 18px; }
+  .psf-form-section-title {
+    font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--teal-deep);
+    font-weight: 700; margin: 0 0 10px; padding-bottom: 6px; border-bottom: 1px dashed var(--line);
+  }
+  .psf-field { margin-bottom: 13px; }
+  .psf-field label {
+    display: block; font-size: 12.5px; font-weight: 600; margin-bottom: 5px; color: var(--ink);
+  }
+  .psf-field .psf-hint { font-weight: 400; color: var(--ink-soft); font-size: 11.5px; display:block; margin-top:2px; }
+  .psf-field input[type=text], .psf-field input[type=tel], .psf-field select, .psf-field textarea {
+    width: 100%; padding: 9px 10px; border: 1px solid #C9C2B4; border-radius: 6px; font-size: 13.5px;
+    font-family: inherit; background: var(--paper); color: var(--ink);
+  }
+  .psf-field textarea { resize: vertical; min-height: 60px; }
+  .psf-field input:focus, .psf-field select:focus, .psf-field textarea:focus {
+    outline: 2px solid var(--teal); outline-offset: 1px; border-color: var(--teal);
+  }
+  .psf-radio-row { display: flex; gap: 14px; }
+  .psf-radio-row label { display: flex; align-items: center; gap: 6px; font-weight: 500; font-size: 13px; }
+  .psf-radio-row input { accent-color: var(--teal); }
+
+  .psf-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 480px) { .psf-two-col { grid-template-columns: 1fr; } }
+
+  .psf-submit-row { display: flex; align-items: center; gap: 12px; margin-top: 18px; }
+  .psf-btn {
+    border: none; border-radius: 7px; padding: 10px 18px; font-size: 13.5px; font-weight: 600;
+    cursor: pointer; font-family: inherit;
+  }
+  .psf-btn-primary { background: var(--teal); color: #fff; }
+  .psf-btn-primary:hover { background: var(--teal-deep); }
+  .psf-btn-ghost { background: transparent; color: var(--ink-soft); border: 1px solid var(--line); }
+  .psf-btn-ghost:hover { background: #F1EEE6; }
+  .psf-status { font-size: 12.5px; color: var(--teal-deep); min-height: 16px; }
+  .psf-status.err { color: var(--rose); }
+
+  .psf-list-toolbar { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+  .psf-list-toolbar input, .psf-list-toolbar select {
+    padding: 8px 10px; border: 1px solid #C9C2B4; border-radius: 6px; font-size: 13px; font-family: inherit;
+    background: var(--paper);
+  }
+  .psf-list-toolbar input { flex: 1; min-width: 160px; }
+  .psf-count { font-size: 12.5px; color: var(--ink-soft); margin-left: auto; white-space: nowrap; }
+
+  .psf-record { border: 1px solid var(--line); border-radius: 8px; margin-bottom: 10px; overflow: hidden; }
+  .psf-record-head {
+    display: flex; align-items: center; gap: 12px; padding: 12px 14px; cursor: pointer; background: #fff;
+  }
+  .psf-record-head:hover { background: #FAFAF7; }
+  .psf-record-name { font-weight: 600; font-size: 13.5px; }
+  .psf-record-meta { font-size: 12px; color: var(--ink-soft); }
+  .psf-tag {
+    font-size: 11px; padding: 3px 9px; border-radius: 999px; font-weight: 600; margin-left: auto; white-space: nowrap;
+  }
+  .psf-tag-asrama { background: var(--teal-tint); color: var(--teal-deep); }
+  .psf-tag-jauh { background: var(--amber-tint); color: var(--amber); }
+  .psf-tag-tunggal { background: var(--rose-tint); color: var(--rose); }
+  .psf-chevron { color: var(--ink-soft); font-size: 12px; transition: transform .15s ease; }
+  .psf-record.open .psf-chevron { transform: rotate(90deg); }
+  .psf-record-body { display: none; padding: 4px 16px 16px; border-top: 1px solid var(--line); }
+  .psf-record.open .psf-record-body { display: block; }
+  .psf-detail-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 20px; margin: 12px 0; }
+  @media (max-width: 560px) { .psf-detail-grid { grid-template-columns: 1fr; } }
+  .psf-detail-item dt { font-size: 11px; text-transform: uppercase; letter-spacing: .03em; color: var(--ink-soft); margin-bottom: 2px; }
+  .psf-detail-item dd { margin: 0; font-size: 13px; }
+  .psf-note-box { background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; font-size: 13px; margin-top: 6px; }
+  .psf-record-actions { display: flex; gap: 8px; margin-top: 12px; }
+  .psf-link-btn { background: none; border: none; padding: 4px 0; font-size: 12.5px; font-weight: 600; cursor: pointer; font-family: inherit; }
+  .psf-link-btn.edit { color: var(--teal-deep); }
+  .psf-link-btn.del { color: var(--rose); }
+
+  .psf-empty { text-align: center; padding: 50px 20px; color: var(--ink-soft); }
+  .psf-empty-icon { font-size: 28px; margin-bottom: 10px; }
+  .psf-empty h3 { font-size: 14px; margin: 0 0 4px; color: var(--ink); }
+  .psf-empty p { font-size: 13px; margin: 0; }
+
+  .psf-loading { padding: 40px; text-align: center; color: var(--ink-soft); font-size: 13px; }
+  .psf-config-banner {
+    background: var(--amber-tint); border: 1px solid #E9CE9C; border-radius: 8px;
+    padding: 14px 16px; margin: 0 26px 20px; font-size: 13px; color: #6B4A16;
+  }
+  .psf-config-banner input {
+    width: 100%; margin-top: 8px; padding: 8px 10px; border: 1px solid #E0C98F; border-radius: 6px;
+    font-size: 12.5px; font-family: monospace;
+  }
+  .psf-config-banner button {
+    margin-top: 8px; background: var(--teal); color: #fff; border: none; border-radius: 6px;
+    padding: 7px 14px; font-size: 12.5px; font-weight: 600; cursor: pointer;
+  }
+</style>
+
+<script>
+(function () {
+  const root = document.getElementById('app-root');
+  const LOCAL_URL_KEY = 'psf-apps-script-url';
+  let APPS_SCRIPT_URL = localStorage.getItem(LOCAL_URL_KEY) || '';
+  let records = [];
+  let editingId = null;
+  let loaded = false;
+
+  async function apiGet() {
+    const res = await fetch(APPS_SCRIPT_URL, { method: 'GET' });
+    if (!res.ok) throw new Error('Gagal memuat data (status ' + res.status + ')');
+    return await res.json();
+  }
+
+  async function apiSave(record) {
+    const res = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'save', record }),
+    });
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || 'Gagal menyimpan');
+    return data;
+  }
+
+  async function apiDelete(id) {
+    const res = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'delete', id }),
+    });
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || 'Gagal menghapus');
+    return data;
+  }
+
+  const FIELD_DEFS = {
+    jarak: ["Dekat (satu kota/kabupaten)", "Sedang (satu provinsi)", "Jauh (luar provinsi/luar pulau)"],
+    tinggal: ["Rumah Orang Tua", "Kos/Kontrakan Mandiri", "Rumah Wali/Saudara", "Asrama Sekolah", "Pondok Pesantren", "Panti Asuhan"],
+    keluarga: ["Orang Tua Lengkap & Bersama", "Orang Tua Tunggal", "Orang Tua Terpisah/Bekerja di Luar Kota", "Wali/Keluarga Besar", "Panti/Tanpa Orang Tua"],
+  };
+
+  function uid() { return 'S' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+  function esc(s) { return (s || '').toString().replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+  function optionsHtml(list, selected) {
+    return '<option value="">— Pilih —</option>' + list.map(v =>
+      `<option value="${esc(v)}" ${v === selected ? 'selected' : ''}>${esc(v)}</option>`).join('');
+  }
+
+  function render() {
+    root.innerHTML = `
+      <div class="psf-wrap">
+        <div class="psf-header">
+          <h1 class="serif">Profil Latar Belakang Siswa</h1>
+          <p>Data ini menjadi sumber informasi dasar untuk memahami konteks setiap siswa — bukan penilaian akademik. Rencana mitigasi disusun terpisah menggunakan data ini.</p>
+          <div class="psf-badge-row">
+            <span class="psf-pill">Data tersimpan di Google Sheet sekolah</span>
+            <span class="psf-pill" id="psf-total-pill">0 siswa terdata</span>
+          </div>
+        </div>
+        ${!APPS_SCRIPT_URL ? `
+        <div class="psf-config-banner">
+          <strong>Pengaturan awal diperlukan.</strong> Tempel URL Web App dari Google Apps Script Anda di sini
+          (lihat PANDUAN_SETUP untuk cara membuatnya). Cukup dilakukan sekali per perangkat.
+          <input type="text" id="psf-url-input" placeholder="https://script.google.com/macros/s/xxxxx/exec" />
+          <button id="psf-url-save">Simpan & Muat Data</button>
+        </div>` : `
+        <div class="psf-grid">
+          <div class="psf-card">
+            <h2 id="psf-form-title">Formulir Profil Siswa</h2>
+            <p class="psf-sub">Sel bertanda * wajib diisi. Diisi oleh wali kelas, guru BK, atau pembina asrama/pondok.</p>
+            <form id="psf-form"></form>
+          </div>
+          <div class="psf-card">
+            <h2>Database Siswa</h2>
+            <p class="psf-sub">Semua profil yang sudah diisi. Klik satu baris untuk melihat detail.</p>
+            <div class="psf-list-toolbar">
+              <input type="text" id="psf-search" placeholder="Cari nama, NIS, atau kelas..." />
+              <select id="psf-filter-tinggal">
+                <option value="">Semua status tinggal</option>
+                ${FIELD_DEFS.tinggal.map(v => `<option value="${esc(v)}">${esc(v)}</option>`).join('')}
+              </select>
+              <button class="psf-btn psf-btn-ghost" id="psf-export">Ekspor CSV</button>
+              <span class="psf-count" id="psf-count"></span>
+            </div>
+            <div id="psf-list"></div>
+          </div>
+        </div>`}
+      </div>
+    `;
+    if (!APPS_SCRIPT_URL) {
+      document.getElementById('psf-url-save').addEventListener('click', () => {
+        const val = document.getElementById('psf-url-input').value.trim();
+        if (!val) return;
+        APPS_SCRIPT_URL = val;
+        localStorage.setItem(LOCAL_URL_KEY, val);
+        init();
+      });
+      return;
+    }
+    renderForm();
+    renderList();
+    bindToolbar();
+  }
+
+  function renderForm() {
+    const editing = editingId ? records.find(r => r.id === editingId) : null;
+    const f = editing || {};
+    document.getElementById('psf-form-title').textContent = editing ? 'Edit Profil Siswa' : 'Formulir Profil Siswa';
+
+    const formEl = document.getElementById('psf-form');
+    formEl.innerHTML = `
+      <div class="psf-form-section">
+        <p class="psf-form-section-title">Identitas</p>
+        <div class="psf-field"><label>Nama Siswa *</label>
+          <input type="text" id="f-nama" value="${esc(f.nama)}" placeholder="Nama lengkap" /></div>
+        <div class="psf-two-col">
+          <div class="psf-field"><label>NIS *</label>
+            <input type="text" id="f-nis" value="${esc(f.nis)}" placeholder="Nomor Induk Siswa" /></div>
+          <div class="psf-field"><label>Kelas *</label>
+            <input type="text" id="f-kelas" value="${esc(f.kelas)}" placeholder="cth. XI TKJ 2" /></div>
+        </div>
+        <div class="psf-field"><label>Jurusan/Kompetensi Keahlian</label>
+          <input type="text" id="f-jurusan" value="${esc(f.jurusan)}" placeholder="cth. Teknik Komputer & Jaringan" /></div>
+      </div>
+
+      <div class="psf-form-section">
+        <p class="psf-form-section-title">Asal & Tempat Tinggal</p>
+        <div class="psf-two-col">
+          <div class="psf-field"><label>Asal Daerah (Provinsi)</label>
+            <input type="text" id="f-asal" value="${esc(f.asal)}" placeholder="cth. Maluku" /></div>
+          <div class="psf-field"><label>Jarak dari Keluarga Inti</label>
+            <select id="f-jarak">${optionsHtml(FIELD_DEFS.jarak, f.jarak)}</select></div>
+        </div>
+        <div class="psf-field"><label>Status Tempat Tinggal</label>
+          <select id="f-tinggal">${optionsHtml(FIELD_DEFS.tinggal, f.tinggal)}</select>
+          <span class="psf-hint">Termasuk asrama sekolah dan pondok pesantren</span></div>
+        <div class="psf-field" id="f-pembina-wrap" style="display:none;">
+          <label>Nama Wali/Pembina Pendamping</label>
+          <input type="text" id="f-pembina" value="${esc(f.pembina)}" placeholder="cth. Ust. Fulan, Asrama Al-Hikmah" /></div>
+      </div>
+
+      <div class="psf-form-section">
+        <p class="psf-form-section-title">Keluarga & Kontak Darurat</p>
+        <div class="psf-field"><label>Struktur Keluarga</label>
+          <select id="f-keluarga">${optionsHtml(FIELD_DEFS.keluarga, f.keluarga)}</select></div>
+        <div class="psf-two-col">
+          <div class="psf-field"><label>Nama Kontak Darurat</label>
+            <input type="text" id="f-kontak-nama" value="${esc(f.kontakNama)}" placeholder="Nama" /></div>
+          <div class="psf-field"><label>No. HP Kontak Darurat</label>
+            <input type="tel" id="f-kontak-hp" value="${esc(f.kontakHp)}" placeholder="08xx-xxxx-xxxx" /></div>
+        </div>
+        <div class="psf-field"><label>Kontak Darurat Aktif/Terhubung?</label>
+          <div class="psf-radio-row">
+            <label><input type="radio" name="f-kontak-aktif" value="Ya" ${f.kontakAktif === 'Ya' ? 'checked' : ''}/> Ya</label>
+            <label><input type="radio" name="f-kontak-aktif" value="Tidak" ${f.kontakAktif === 'Tidak' ? 'checked' : ''}/> Tidak</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="psf-form-section">
+        <p class="psf-form-section-title">Riwayat</p>
+        <div class="psf-field"><label>Riwayat Pindah Sekolah?</label>
+          <div class="psf-radio-row">
+            <label><input type="radio" name="f-pindah" value="Ya" ${f.pindah === 'Ya' ? 'checked' : ''}/> Ya</label>
+            <label><input type="radio" name="f-pindah" value="Tidak" ${f.pindah === 'Tidak' ? 'checked' : ''}/> Tidak</label>
+          </div>
+        </div>
+        <div class="psf-field"><label>Riwayat Insiden Sebelumnya?</label>
+          <span class="psf-hint" style="margin-bottom:5px; display:block;">Perundungan, kekerasan, tawuran, hukum, dll — di sekolah mana pun</span>
+          <div class="psf-radio-row">
+            <label><input type="radio" name="f-insiden" value="Ya" ${f.insiden === 'Ya' ? 'checked' : ''}/> Ya</label>
+            <label><input type="radio" name="f-insiden" value="Tidak" ${f.insiden === 'Tidak' ? 'checked' : ''}/> Tidak</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="psf-form-section" style="margin-bottom:6px;">
+        <p class="psf-form-section-title">Catatan Konteks</p>
+        <div class="psf-field">
+          <label>Catatan Tambahan</label>
+          <textarea id="f-catatan" placeholder="Konteks lain yang relevan untuk memahami siswa ini...">${esc(f.catatan)}</textarea>
+        </div>
+        <div class="psf-field">
+          <label>Diisi Oleh</label>
+          <input type="text" id="f-diisi-oleh" value="${esc(f.diisiOleh)}" placeholder="Nama guru/wali kelas/BK" />
+        </div>
+      </div>
+
+      <div class="psf-submit-row">
+        <button type="submit" class="psf-btn psf-btn-primary">${editing ? 'Simpan Perubahan' : 'Simpan Profil'}</button>
+        ${editing ? '<button type="button" class="psf-btn psf-btn-ghost" id="psf-cancel-edit">Batal</button>' : ''}
+      </div>
+      <div class="psf-status" id="psf-form-status"></div>
+    `;
+
+    const tinggalSel = document.getElementById('f-tinggal');
+    const pembinaWrap = document.getElementById('f-pembina-wrap');
+    function toggleP() {
+      pembinaWrap.style.display = ['Asrama Sekolah', 'Pondok Pesantren', 'Panti Asuhan'].includes(tinggalSel.value) ? 'block' : 'none';
+    }
+    tinggalSel.addEventListener('change', toggleP);
+    toggleP();
+
+    formEl.addEventListener('submit', onSubmit);
+    const cancelBtn = document.getElementById('psf-cancel-edit');
+    if (cancelBtn) cancelBtn.addEventListener('click', () => { editingId = null; renderForm(); });
+  }
+
+  function getRadio(name) {
+    const el = document.querySelector(`input[name="${name}"]:checked`);
+    return el ? el.value : '';
+  }
+
+  async function onSubmit(e) {
+    e.preventDefault();
+    const statusEl = document.getElementById('psf-form-status');
+    const nama = document.getElementById('f-nama').value.trim();
+    const nis = document.getElementById('f-nis').value.trim();
+    const kelas = document.getElementById('f-kelas').value.trim();
+    if (!nama || !nis || !kelas) {
+      statusEl.textContent = 'Nama, NIS, dan Kelas wajib diisi.';
+      statusEl.classList.add('err');
+      return;
+    }
+    const record = {
+      id: editingId || uid(),
+      nama, nis, kelas,
+      jurusan: document.getElementById('f-jurusan').value.trim(),
+      asal: document.getElementById('f-asal').value.trim(),
+      jarak: document.getElementById('f-jarak').value,
+      tinggal: document.getElementById('f-tinggal').value,
+      pembina: document.getElementById('f-pembina') ? document.getElementById('f-pembina').value.trim() : '',
+      keluarga: document.getElementById('f-keluarga').value,
+      kontakNama: document.getElementById('f-kontak-nama').value.trim(),
+      kontakHp: document.getElementById('f-kontak-hp').value.trim(),
+      kontakAktif: getRadio('f-kontak-aktif'),
+      pindah: getRadio('f-pindah'),
+      insiden: getRadio('f-insiden'),
+      catatan: document.getElementById('f-catatan').value.trim(),
+      diisiOleh: document.getElementById('f-diisi-oleh').value.trim(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    statusEl.classList.remove('err');
+    statusEl.textContent = 'Menyimpan...';
+    try {
+      await apiSave(record);
+      if (editingId) {
+        records = records.map(r => r.id === editingId ? record : r);
+      } else {
+        records = [record, ...records];
+      }
+      editingId = null;
+      render();
+      const statusEl2 = document.getElementById('psf-form-status');
+      if (statusEl2) statusEl2.textContent = 'Profil siswa tersimpan.';
+    } catch (err) {
+      console.error(err);
+      statusEl.textContent = 'Gagal menyimpan: ' + err.message;
+      statusEl.classList.add('err');
+    }
+  }
+
+  function tagsFor(r) {
+    const tags = [];
+    if (['Asrama Sekolah', 'Pondok Pesantren', 'Panti Asuhan'].includes(r.tinggal)) tags.push(`<span class="psf-tag psf-tag-asrama">${esc(r.tinggal)}</span>`);
+    if (r.jarak === 'Jauh (luar provinsi/luar pulau)') tags.push('<span class="psf-tag psf-tag-jauh">Jauh dari keluarga</span>');
+    if (r.keluarga && r.keluarga !== 'Orang Tua Lengkap & Bersama') tags.push('<span class="psf-tag psf-tag-tunggal">Keluarga terpisah</span>');
+    return tags.slice(0, 1).join('');
+  }
+
+  function renderList() {
+    const search = (document.getElementById('psf-search')?.value || '').toLowerCase();
+    const filterTinggal = document.getElementById('psf-filter-tinggal')?.value || '';
+    const listEl = document.getElementById('psf-list');
+    document.getElementById('psf-total-pill').textContent = `${records.length} siswa terdata`;
+
+    let filtered = records.filter(r => {
+      const hay = `${r.nama} ${r.nis} ${r.kelas}`.toLowerCase();
+      const matchSearch = !search || hay.includes(search);
+      const matchTinggal = !filterTinggal || r.tinggal === filterTinggal;
+      return matchSearch && matchTinggal;
+    });
+    document.getElementById('psf-count').textContent = `${filtered.length} ditampilkan`;
+
+    if (records.length === 0) {
+      listEl.innerHTML = `<div class="psf-empty">
+        <div class="psf-empty-icon">&#128203;</div>
+        <h3>Belum ada profil siswa</h3>
+        <p>Isi formulir di sebelah kiri untuk mulai mendata siswa.</p>
+      </div>`;
+      return;
+    }
+    if (filtered.length === 0) {
+      listEl.innerHTML = `<div class="psf-empty"><p>Tidak ada hasil yang cocok dengan pencarian.</p></div>`;
+      return;
+    }
+
+    listEl.innerHTML = filtered.map(r => `
+      <div class="psf-record" data-id="${r.id}">
+        <div class="psf-record-head">
+          <span class="psf-chevron">&#9656;</span>
+          <div>
+            <div class="psf-record-name">${esc(r.nama)}</div>
+            <div class="psf-record-meta">${esc(r.nis)} &middot; ${esc(r.kelas)}${r.jurusan ? ' &middot; ' + esc(r.jurusan) : ''}</div>
+          </div>
+          ${tagsFor(r)}
+        </div>
+        <div class="psf-record-body">
+          <dl class="psf-detail-grid">
+            <div class="psf-detail-item"><dt>Asal Daerah</dt><dd>${esc(r.asal) || '—'}</dd></div>
+            <div class="psf-detail-item"><dt>Jarak dari Keluarga</dt><dd>${esc(r.jarak) || '—'}</dd></div>
+            <div class="psf-detail-item"><dt>Status Tempat Tinggal</dt><dd>${esc(r.tinggal) || '—'}</dd></div>
+            <div class="psf-detail-item"><dt>Wali/Pembina Pendamping</dt><dd>${esc(r.pembina) || '—'}</dd></div>
+            <div class="psf-detail-item"><dt>Struktur Keluarga</dt><dd>${esc(r.keluarga) || '—'}</dd></div>
+            <div class="psf-detail-item"><dt>Kontak Darurat</dt><dd>${esc(r.kontakNama) || '—'} ${r.kontakHp ? '(' + esc(r.kontakHp) + ')' : ''} ${r.kontakAktif ? '— ' + esc(r.kontakAktif) + ' aktif' : ''}</dd></div>
+            <div class="psf-detail-item"><dt>Riwayat Pindah Sekolah</dt><dd>${esc(r.pindah) || '—'}</dd></div>
+            <div class="psf-detail-item"><dt>Riwayat Insiden Sebelumnya</dt><dd>${esc(r.insiden) || '—'}</dd></div>
+          </dl>
+          ${r.catatan ? `<div class="psf-note-box">${esc(r.catatan)}</div>` : ''}
+          <div class="psf-record-meta" style="margin-top:8px;">Diisi oleh: ${esc(r.diisiOleh) || '—'} &middot; Diperbarui: ${new Date(r.updatedAt).toLocaleString('id-ID')}</div>
+          <div class="psf-record-actions">
+            <button class="psf-link-btn edit" data-edit="${r.id}">Edit</button>
+            <button class="psf-link-btn del" data-del="${r.id}">Hapus</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+
+    listEl.querySelectorAll('.psf-record-head').forEach(el => {
+      el.addEventListener('click', () => el.closest('.psf-record').classList.toggle('open'));
+    });
+    listEl.querySelectorAll('[data-edit]').forEach(el => {
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        editingId = el.getAttribute('data-edit');
+        renderForm();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    });
+    listEl.querySelectorAll('[data-del]').forEach(el => {
+      el.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const id = el.getAttribute('data-del');
+        if (!confirm('Hapus profil siswa ini?')) return;
+        try {
+          await apiDelete(id);
+          records = records.filter(r => r.id !== id);
+        } catch (err) {
+          console.error(err);
+          alert('Gagal menghapus: ' + err.message);
+        }
+        renderList();
+      });
+    });
+  }
+
+  function bindToolbar() {
+    document.getElementById('psf-search').addEventListener('input', renderList);
+    document.getElementById('psf-filter-tinggal').addEventListener('change', renderList);
+    document.getElementById('psf-export').addEventListener('click', exportCsv);
+  }
+
+  function exportCsv() {
+    const cols = ['nis','nama','kelas','jurusan','asal','jarak','tinggal','pembina','keluarga','kontakNama','kontakHp','kontakAktif','pindah','insiden','catatan','diisiOleh','updatedAt'];
+    const header = cols.join(',');
+    const rows = records.map(r => cols.map(c => `"${(r[c] || '').toString().replace(/"/g,'""')}"`).join(','));
+    const csv = [header, ...rows].join('\\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'profil_siswa_' + new Date().toISOString().slice(0,10) + '.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  async function init() {
+    if (!APPS_SCRIPT_URL) { render(); return; }
+    root.innerHTML = '<div class="psf-loading">Memuat data siswa dari Google Sheet...</div>';
+    try {
+      records = await apiGet();
+    } catch (err) {
+      console.error(err);
+      records = [];
+      root.innerHTML = `<div class="psf-loading" style="color:#A5423A;">
+        Gagal terhubung ke Google Sheet. Periksa kembali URL Web App yang ditempel.<br/>
+        <button id="psf-reset-url" style="margin-top:10px; padding:7px 14px; border-radius:6px; border:1px solid #A5423A; background:#fff; color:#A5423A; cursor:pointer;">Ubah URL</button>
+      </div>`;
+      const resetBtn = document.getElementById('psf-reset-url');
+      if (resetBtn) resetBtn.addEventListener('click', () => {
+        APPS_SCRIPT_URL = '';
+        localStorage.removeItem(LOCAL_URL_KEY);
+        render();
+      });
+      return;
+    }
+    loaded = true;
+    render();
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
